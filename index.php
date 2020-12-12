@@ -74,7 +74,11 @@
         $count = mysqli_num_rows($result);
 
         if ($count==1) {
-            header("Location: welcome.php");
+            ?>
+            <script language="JavaScript">
+            document.location='welcome.php';
+        </script>
+        <?php
         }
 
         else{
