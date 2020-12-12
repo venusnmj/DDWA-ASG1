@@ -17,13 +17,13 @@
         setTimeout(() => {
           loader.classList.add('fadeOut');
         }, 300);
-      });</script><div class="peers ai-s fxw-nw h-100vh"><div class="d-n@sm- peer peer-greed h-100 pos-r bgr-n bgpX-c bgpY-c bgsz-cv cc_cursor" style="background-image:url(assets/static/images/bg.jpg)"><div class="pos-a centerXY"><div class="bgc-white bdrs-50p pos-r cc_cursor" style="width:120px;height:120px"><img class="pos-a centerXY cc_cursor" src="assets/static/images/logo.png" alt=""></div></div></div><div class="col-12 col-md-4 peer pX-40 pY-80 h-100 bgc-white scrollable pos-r ps cc_cursor" style="min-width:320px"><h4 class="fw-300 c-grey-900 mB-40 cc_cursor">Login</h4>
+      });</script><div class="peers ai-s fxw-nw h-100vh"><div class="d-n@sm- peer peer-greed h-100 pos-r bgr-n bgpX-c bgpY-c bgsz-cv cc_cursor" style="background-image:url(assets/static/images/bg.jpg)"><div class="pos-a centerXY"><div class="bgc-white bdrs-50p pos-r cc_cursor" style="width:120px;height:120px"><img class="pos-a centerXY cc_cursor" src="assets/static/images/logo.png" alt=""></div></div></div><div class="col-12 col-md-4 peer pX-40 pY-80 h-100 bgc-white scrollable pos-r ps cc_cursor" style="min-width:320px"><h4 class="fw-300 c-grey-900 mB-40 cc_cursor">IMGD Resource Library Login</h4>
       
       
       <form action="<?php echo $_GET['PHP_SELF'];?>" method="get">
           <div class="form-group">
               <label class="text-normal text-dark">ID</label>
-              <input type="text"  name="ID" id="ID" class="form-control cc_cursor" placeholder="John Doe">
+              <input type="text"  name="ID" id="ID" class="form-control cc_cursor" placeholder="10199999">
         </div>
 
         <div class="form-group cc_cursor">
@@ -33,6 +33,7 @@
 
         <div class="form-group">
             <div class="peers ai-c jc-sb fxw-nw cc_cursor">
+                <!--
                 <div class="peer">
                     <div class="checkbox checkbox-circle checkbox-info peers ai-c">
                         <input type="checkbox" id="inputCall1" name="inputCheckboxesCall" class="peer">
@@ -40,7 +41,7 @@
                             <span class="peer peer-greed">Remember Me</span>
                         </label>
                     </div>
-                </div>
+                </div>-->
                 <div class="peer">
                     <button type="submit" name="submit"  value="Submit" class="btn btn-primary">Login</button>
                 </div>
@@ -56,6 +57,16 @@
     if(isset($_GET['submit'])){
         $myusername = mysqli_real_escape_string($db,$_GET['ID']);
         $mypassword = mysqli_real_escape_string($db,$_GET['password']); 
+
+        if($myusername=="" || $mypassword==""){
+            ?>
+            <h6 class="validAlert">
+            <?php echo "you got missing fields"; ?>
+        </h6>
+            <?php
+        }
+        else{
+
         $sql = "SELECT studentid FROM student WHERE studentid = '$myusername' and studentpassword = '$mypassword'";
 
         $result = $db->query($sql);
@@ -64,19 +75,29 @@
         $count = mysqli_num_rows($result);
 
         
-        ?>
-        <h4>
+        
+        
             
-        <?php 
-        if ($result->num_rows > 0) {
-            echo "success";
+        
+        if ($count==1) {
+            header("location: welcome.php");
         }
-        echo $count . " counting";
-        //header("location: welcome.php");?>
-        </h4>
+        else{
+            ?>
+            <h6 class="validAlert">
+            <?php
+           echo "invalid ID or password";
+           ?>
+           </h6>
+           <?php
+        }
+        
+        
+        
 
-        <?php
+        
     }
+}
     ?>
 
 
