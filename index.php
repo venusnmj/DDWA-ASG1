@@ -66,7 +66,6 @@
             <?php
         }
         else{
-
         $sql = "SELECT studentid FROM student WHERE studentid = '$myusername' and studentpassword = '$mypassword'";
 
         $result = $db->query($sql);
@@ -74,14 +73,10 @@
         $active = $row['studentid'];
         $count = mysqli_num_rows($result);
 
-        
-        
-        
-            
-        
         if ($count==1) {
-            header("location: welcome.php");
+            header("Location: welcome.php");
         }
+
         else{
             ?>
             <h6 class="validAlert">
