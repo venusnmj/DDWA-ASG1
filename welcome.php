@@ -368,7 +368,8 @@
             $sql3 = "SELECT * FROM project WHERE projectno='$studentproj'";
                 $result3 = $db->query($sql3);
                 $row3 = mysqli_fetch_array($result3,MYSQLI_BOTH);
-                
+                $aboutname = "Project";
+
                 echo "
                 <div class='card card-primary'>
                   <div class='card-header'>
