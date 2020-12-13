@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<?php session_start();?>
 <html>
     <head><title>Sign In</title><style>#loader{transition:all .3s ease-in-out;opacity:1;visibility:visible;position:fixed;height:100vh;width:100%;background:#fff;z-index:90000}#loader.fadeOut{opacity:0;visibility:hidden}.spinner{width:40px;height:40px;position:absolute;top:calc(50% - 20px);left:calc(50% - 20px);background-color:#333;border-radius:100%;-webkit-animation:sk-scaleout 1s infinite ease-in-out;animation:sk-scaleout 1s infinite ease-in-out}@-webkit-keyframes sk-scaleout{0%{-webkit-transform:scale(0)}100%{-webkit-transform:scale(1);opacity:0}}@keyframes sk-scaleout{0%{-webkit-transform:scale(0);transform:scale(0)}100%{-webkit-transform:scale(1);transform:scale(1);opacity:0}}</style><link href="./style.css" rel="stylesheet"><style type="text/css">/*!
  * Bootstrap v4.0.0-beta.2 (https://getbootstrap.com)
@@ -20,7 +21,7 @@
       });</script><div class="peers ai-s fxw-nw h-100vh"><div class="d-n@sm- peer peer-greed h-100 pos-r bgr-n bgpX-c bgpY-c bgsz-cv cc_cursor" style="background-image:url(assets/static/images/bg.jpg)"><div class="pos-a centerXY"><div class="bgc-white bdrs-50p pos-r cc_cursor" style="width:120px;height:120px"><img class="pos-a centerXY cc_cursor" src="assets/static/images/logo.png" alt=""></div></div></div><div class="col-12 col-md-4 peer pX-40 pY-80 h-100 bgc-white scrollable pos-r ps cc_cursor" style="min-width:320px"><h4 class="fw-300 c-grey-900 mB-40 cc_cursor">IMGD Resource Library Login</h4>
       
       
-      <form action="<?php echo $_GET['PHP_SELF'];?>" method="get">
+      <form action="<?php echo $_SERVER['PHP_SELF'];?>" method="post">
           <div class="form-group">
               <label class="text-normal text-dark">ID</label>
               <input type="text"  name="ID" id="ID" class="form-control cc_cursor" placeholder="10199999">
@@ -48,15 +49,48 @@
             </div>
         </div>
     </form>
-    
-   
     <?php
-    include("config.php");
-    session_start();
+    // Emulate register_globals off
+    function unregister_GLOBALS()
+    {
+        if (!ini_get('register_globals')) {
+            return;
+        }
+    
+        // Might want to change this perhaps to a nicer error
+        if (isset($_REQUEST['GLOBALS']) || isset($_FILES['GLOBALS'])) {
+            die('GLOBALS overwrite attempt detected');
+        }
+    
+        // Variables that shouldn't be unset
+        $noUnset = array('GLOBALS',  '_GET',
+                         '_POST',    '_COOKIE',
+                         '_REQUEST', '_SERVER',
+                         '_ENV',     '_FILES');
+    
+        $input = array_merge($_GET,    $_POST,
+                             $_COOKIE, $_SERVER,
+                             $_ENV,    $_FILES,
+                             isset($_SESSION) && is_array($_SESSION) ? $_SESSION : array());
+        
+        foreach ($input as $k => $v) {
+            if (!in_array($k, $noUnset) && isset($GLOBALS[$k])) {
+                unset($GLOBALS[$k]);
+            }
+        }
+    }
+    
+    unregister_GLOBALS();
 
-    if(isset($_GET['submit'])){
-        $myusername = mysqli_real_escape_string($db,$_GET['ID']);
-        $mypassword = mysqli_real_escape_string($db,$_GET['password']); 
+
+    include("config.php");
+    
+
+    //if(isset($_GET['submit'])){
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+        $myusername = mysqli_real_escape_string($db,$_POST['ID']);
+        $mypassword = mysqli_real_escape_string($db,$_POST['password']); 
 
         if($myusername=="" || $mypassword==""){
             ?>
@@ -68,19 +102,52 @@
         else{
         $sql = "SELECT studentid FROM student WHERE studentid = '$myusername' and studentpassword = '$mypassword'";
 
+        $user = "Student";
         $result = $db->query($sql);
         $row = mysqli_fetch_array($result,MYSQLI_BOTH);
         $active = $row['studentid'];
         $count = mysqli_num_rows($result);
 
         if ($count==1) {
+            $_SESSION['user'] = "Student";
+            $_SESSION['id'] = $myusername;
             ?>
             <script language="JavaScript">
             document.location='welcome.php';
         </script>
         <?php
+         exit();
         }
 
+        else{
+            $sql = "SELECT staffid FROM lecturer WHERE staffid = '$myusername' and staffpassword = '$mypassword'";
+
+        $user = "Student";
+        $result = $db->query($sql);
+        $row = mysqli_fetch_array($result,MYSQLI_BOTH);
+        $active = $row['studentid'];
+        $count = mysqli_num_rows($result);
+
+        if ($count==1 && $row['admin']==0) {
+            $_SESSION['user'] = "Staff";
+            $_SESSION['id'] = $myusername;
+            ?>
+            <script language="JavaScript">
+            document.location='welcome.php';
+        </script>
+        <?php
+         exit();
+        }
+        else if($count==1 && $row['admin']==1){
+            $_SESSION['user'] = "Admin";
+            $_SESSION['id'] = $myusername;
+            ?>
+            <script language="JavaScript">
+            document.location='welcome.php';
+        </script>
+        <?php
+         exit();
+        }
         else{
             ?>
             <h6 class="validAlert">
@@ -89,6 +156,9 @@
            ?>
            </h6>
            <?php
+        }
+
+            
         }
         
         
