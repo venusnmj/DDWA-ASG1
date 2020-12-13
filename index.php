@@ -120,25 +120,27 @@
         }
 
         else{
-            $sql = "SELECT staffid FROM lecturer WHERE staffid = '$myusername' and staffpassword = '$mypassword'";
+            $sql = "SELECT * FROM lecturer WHERE staffid = '$myusername' and staffpassword = '$mypassword'";
 
-        $user = "Student";
+        $user = "Staff";
         $result = $db->query($sql);
         $row = mysqli_fetch_array($result,MYSQLI_BOTH);
-        $active = $row['studentid'];
+        $active = $row['staffid'];
         $count = mysqli_num_rows($result);
 
         if ($count==1 && $row['admin']==0) {
+
             $_SESSION['user'] = "Staff";
             $_SESSION['id'] = $myusername;
             ?>
+            
             <script language="JavaScript">
             document.location='welcome.php';
         </script>
         <?php
          exit();
         }
-        else if($count==1 && $row['admin']==1){
+        elseif($count==1 && $row['admin']==1){
             $_SESSION['user'] = "Admin";
             $_SESSION['id'] = $myusername;
             ?>

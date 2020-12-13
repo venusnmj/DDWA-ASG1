@@ -17,34 +17,22 @@
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 <?php
+
             $username=$_SESSION['id'];
-            if($_SESSION['user']=="Student"){
-                $sql = "SELECT * FROM student WHERE studentid = '$username'";
-                $result = $db->query($sql);
-                $row = mysqli_fetch_array($result,MYSQLI_BOTH);
-                    
-                    $givenname= $row['givenname'];
-                    $familyname=$row['familyname'];
-                    $user="Student";
-                    $year=$row['yearenrolled'];
-                    $contact=$row['studentcontactno'];
-                    $identification= $username;
-                    $studentproj=$row['projectno'];
-            }
-            elseif($_SESSION['user']=="Staff" || $_SESSION['user']=="Admin"){
+            if($_SESSION['user']=="Admin"){
                 $sql = "SELECT * FROM lecturer WHERE staffid = '$username'";
                 $result = $db->query($sql);
                 $row = mysqli_fetch_array($result,MYSQLI_BOTH);
-                    
-                    $givenname= $row['givenname'];
-                    $familyname=$row['familyname'];
-                    
-                    $year=$row['yearjoined'];
-                    $contact=$row['staffcontactno'];
-                    $identification= $username;
-                    $projectone = $row['project1'];
-                    $projecttwo = $row['project2'];
-                    $user = $_SESSION['user'];
+                $givenname= $row['givenname'];
+        $familyname=$row['familyname'];
+        
+        $year=$row['yearjoined'];
+        $contact=$row['staffcontactno'];
+        $identification= $username;
+        $projectone = $row['project1'];
+        $projecttwo = $row['project2'];
+        $user = $_SESSION['user'];
+
             }
 
             ?>
@@ -150,28 +138,9 @@
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
 <?php
-               if($_SESSION['user']=="Student" || $_SESSION['user']=="Staff"){
-              echo "'<li class='nav-item'>
-            <a href='#' class='nav-link active'>
-              <i class='nav-icon fas fa-user-circle'></i>
-              <p>
-                About me
-              </p>
-            </a>
-          </li>
-
-          <li class='nav-item'>
-            <a href='software.php' class='nav-link'>
-              <i class='nav-icon fas fa-cart-arrow-down'></i>
-              <p>
-                Softwares
-              </p>
-            </a>
-          </li>";
-               }
                if($_SESSION['user']=="Admin"){
                 echo "'<li class='nav-item'>
-                <a href='welcome.php' class='nav-link active'>
+                <a href='welcome.php' class='nav-link'>
                   <i class='nav-icon fas fa-user-circle'></i>
                   <p>
                     About me
@@ -189,7 +158,7 @@
               </li>
               
               <li class='nav-item'>
-                <a href='category.php' class='nav-link'>
+                <a href='category.php' class='nav-link active'>
                   <i class='nav-icon fas fa-tags'></i>
                   <p>
                     Category
@@ -225,8 +194,6 @@
               </li>
 
               ";
-
-              
                }
           ?>
          
@@ -244,13 +211,13 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>About me</h1>
+            <h1>Category</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
               <!--<li class="breadcrumb-item"><a href="#">Layout</a></li>-->
-              <li class="breadcrumb-item active">About me</li>
+              <li class="breadcrumb-item active">Category</li>
             </ol>
           </div>
         </div>
@@ -265,158 +232,154 @@
             <!-- Default box -->
     
             
-            <div class="col-md-3">
-            <?php include("inc/profile.php");?>
+            <div class="col-12">
+
+
+
+
+            <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Category</h3>
+
+        </div>
+        <div class="card-body p-0">
+          <table class="table table-striped projects">
+              <thead>
+                  <tr>
+                      <th style="width: 1%">
+                          #
+                      </th>
+                      <th style="width: 20%">
+                          Category Name
+                      </th>
+                      <th style="width: 30%">
+                          Softwares
+                      </th>
+                      <th>
+
+                      </th>
+                      <th style="width: 8%" class="text-center">
+                          Status
+                      </th>
+                  </tr>
+              </thead>
+              
+            <tbody>
+
+            <?php 
+            /*$sql2 = "SELECT DISTINCT category.categoryname,category.categoryno ,software.softwaretitle
+FROM software
+INNER JOIN category
+ON category.categoryno IN(cat1, cat2)
+ORDER BY category.categorynod";
+            $result2 = $db->query($sql2);*/
+            for($i=1; $i<6; $i++){
+                $sql3 = "SELECT DISTINCT category.categoryname,category.categoryno ,software.softwaretitle
+    FROM software
+    INNER JOIN category
+    ON category.categoryno IN(cat1, cat2)
+    WHERE category.categoryno= '$i'";
+    $result3 = $db->query($sql3);
+    $result2= $db->query($sql3);
+    $row2 = mysqli_fetch_array($result2,MYSQLI_BOTH);
+
+    //if ($result3->num_rows > 0) { 
+    ?>
+    <tr>
+                      <td>
+                          #<?php echo $row2['categoryno'];?>
+                      </td>
+                      <td>
+                          <a>
+                          <?php echo $row2['categoryname'];?>
+                          </a>
+                      </td>
+                      <td>
+                          <ul class="list-inline">
+<?php
+    while($row3 = mysqli_fetch_assoc($result3)) { 
+        if($row3['softwaretitle']=="Unity"){
+            $symbolapp="<i class='fab fa-unity fa-2x'></i>";
+        }
+        elseif($row3['softwaretitle']=="Android Studio"){
+            $symbolapp="<i class='fab fa-android fa-2x'></i>";
+        }
+        elseif($row3['softwaretitle']=="InVision"){
+            $symbolapp="<i class='fab fa-invision fa-2x'></i>";
+        }
+        elseif($row3['softwaretitle']=="Powerpoint"){
+            $symbolapp="<i class='far fa-file-powerpoint fa-2x'></i>";
+        }
+        elseif($row3['softwaretitle']=="After Effects"){
+            $symbolapp="<img alt='Avatar' class='table-avatar' src='assets/static/images/ae.png'>";
+        }
+        elseif($row3['softwaretitle']=="Maya"){
+            $symbolapp="<img alt='Avatar' class='table-avatar' src='assets/static/images/maya.png'>";
+        }
+        elseif($row3['softwaretitle']=="Illustrator"){
+            $symbolapp="<img alt='Avatar' class='table-avatar' src='assets/static/images/adobe-illustrator.png'>";
+        }
+        elseif($row3['softwaretitle']=="Photoshop"){
+            $symbolapp="<img alt='Avatar' class='table-avatar' src='assets/static/images/adobe-photoshop.png'>";
+        }
+        elseif($row3['softwaretitle']=="Premiere Pro"){
+            $symbolapp="<img alt='Avatar' class='table-avatar' src='assets/static/images/pp.png'>";
+        }
+        elseif($row3['softwaretitle']=="XD"){
+            $symbolapp="<img alt='Avatar' class='table-avatar' src='assets/static/images/xd.png'>";
+        }
+        ?>
+        <li class="list-inline-item">
+            <?php echo $symbolapp;?>
+        </li>
+    <?php
+    }
+    echo "</ul></td><td>
+</td>
+    <td> Sem 2.2 </td>
+</tr>";
+
+}     
+        ?>
+
+
+
+
+
+                  <!--
+                              <li class="list-inline-item">
+                                  
+                                  <img alt="Avatar" class="table-avatar" src="AdminLTE-3.1.0-rc/dist/img/avatar.png">
+                              </li>
+                              <li class="list-inline-item">
+                                  <img alt="Avatar" class="table-avatar" src="AdminLTE-3.1.0-rc/dist/img/avatar2.png">
+                              </li>
+                              <li class="list-inline-item">
+                                  <img alt="Avatar" class="table-avatar" src="AdminLTE-3.1.0-rc/dist/img/avatar3.png">
+                              </li>
+                              <li class="list-inline-item">
+                                  <img alt="Avatar" class="table-avatar" src="AdminLTE-3.1.0-rc/dist/img/avatar4.png">
+                              </li>-->
+                          
+                  
+                  
+                  
+
+                  
+                  
+              </tbody>
+          </table>
+        </div>
+        <!-- /.card-body -->
+      </div>
+
+
+
+
         </div>
 
-        <div class="col-md-9">
-        <?php
-            if($_SESSION['user']=="Staff" || $_SESSION['user']=="Admin" ){
-
-                    $sql2 = "SELECT * FROM project WHERE projectno IN('$projectone' ,'$projecttwo')";
-                    $result2 = $db->query($sql2);
-                    
-                    $aboutname = "project(s)";
-                    if ($result2->num_rows > 0) {
-
-                        while($row2 = mysqli_fetch_assoc($result2)) {
-            echo "
-            <div class='card card-primary'>
-              <div class='card-header'>
-                <h3 class='card-title'>". $aboutname . "</h3>
-              </div>
-              <!-- /.card-header -->
-              <div class='card-body'>
-                <strong><i class='fas fa-book mr-1'></i> Title</strong>
-
-                <p class='text-muted'>"
-                    . $row2["title"]."<br/>" . "</p>
-
-                <hr>
-
-                <strong><i class='fas fa-coins mr-1'></i> budget</strong>
-
-                <p class='text-muted'>"."$".$row2["budget"]."<br/>". "</p>
-
-                <hr>
-
-                <strong><i class='far fa-file-alt mr-1'></i> Description </strong>
-
-                <p class='text-muted'>". $row2["shortdesc"]."<br/>".
-                "</p>
-
-                <hr>
-
-                <strong><i class='fas fa-building mr-1'></i> Company</strong>
-
-                <p class='text-muted'>". $row2["companyname"]."<br/>" . "</p>
-
-                <hr>
-
-                <strong><i class='far fa-clock mr-1'></i> Hours</strong>
-
-                <p class='text-muted'>". $row2["hours"]." hrs"."<br/>" . "<i class='fas fa-hourglass-start'></i>".$row2["startdate"] .
-                "<br/>" . "<i class='fas fa-hourglass-end'></i>".$row2["enddate"] ."</p>
-    
-              <!-- /.card-body -->
-            </div></div>";
-                        }
-                    }
-                    else{
-                        echo "No projects";
-                    }
-            }
-            elseif($_SESSION['user']=="Student"){
-                $sql2 = "SELECT * FROM notebook WHERE studentid='$username'";
-                $result2 = $db->query($sql2);
-                $row2 = mysqli_fetch_array($result2,MYSQLI_BOTH);
-                $aboutname = "Notebook";
-                echo "
-            <div class='card card-primary'>
-              <div class='card-header'>
-                <h3 class='card-title'>". $aboutname . "</h3>
-              </div>
-              <!-- /.card-header -->
-              <div class='card-body'>
-                <strong><i class='fas fa-laptop mr-1'></i> model </strong>
-
-                <p class='text-muted'>"
-                    . $row2["model"]."<br/>" ."Make: ".$row2['make']."</p>
-
-                <hr>
-
-                <strong><i class='fas fa-hdd mr-1'></i> RAM amount</strong>
-
-                <p class='text-muted'>".$row2["ramamount"]."GB"."<br/>". "</p>
-
-                <hr>
-
-                <strong><i class='fab fa-windows mr-1'></i> operating system </strong>
-
-                <p class='text-muted'>". $row2["operatingsystem"]."<br/>".
-                "</p>
-
-                <hr>
-
-                <strong><i class='fas fa-barcode mr-1'></i> serial Number</strong>
-
-                <p class='text-muted'>". $row2["serialno"]."<br/>" . "</p>
-              <!-- /.card-body -->
-            </div></div>";
-
-
-            $sql3 = "SELECT * FROM project WHERE projectno='$studentproj'";
-                $result3 = $db->query($sql3);
-                $row3 = mysqli_fetch_array($result3,MYSQLI_BOTH);
-                
-                echo "
-                <div class='card card-primary'>
-                  <div class='card-header'>
-                    <h3 class='card-title'>". $aboutname . "</h3>
-                  </div>
-                  <!-- /.card-header -->
-                  <div class='card-body'>
-                    <strong><i class='fas fa-book mr-1'></i> Title</strong>
-    
-                    <p class='text-muted'>"
-                        . $row3["title"]."<br/>" . "</p>
-    
-                    <hr>
-    
-                    <strong><i class='fas fa-coins mr-1'></i> budget</strong>
-    
-                    <p class='text-muted'>"."$".$row3["budget"]."<br/>". "</p>
-    
-                    <hr>
-    
-                    <strong><i class='far fa-file-alt mr-1'></i> Description </strong>
-    
-                    <p class='text-muted'>". $row3["shortdesc"]."<br/>".
-                    "</p>
-    
-                    <hr>
-    
-                    <strong><i class='fas fa-building mr-1'></i> Company</strong>
-    
-                    <p class='text-muted'>". $row3["companyname"]."<br/>" . "</p>
-    
-                    <hr>
-    
-                    <strong><i class='far fa-clock mr-1'></i> Hours</strong>
-    
-                    <p class='text-muted'>". $row3["hours"]." hrs"."<br/>" . "<i class='fas fa-hourglass-start'></i>".$row3["startdate"] .
-                    "<br/>" . "<i class='fas fa-hourglass-end'></i>".$row3["enddate"] ."</p>
-        
-                  <!-- /.card-body -->
-                </div></div>";
-
-            }
-            ?>
-
-
         
 
-          </div>
         </div>
       </div>
     </section>
