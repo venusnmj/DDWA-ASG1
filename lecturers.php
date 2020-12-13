@@ -17,24 +17,20 @@
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 <?php
-
-            $username=$_SESSION['id'];
-            if($_SESSION['user']=="Admin"){
+                $username=$_SESSION['id'];
                 $sql = "SELECT * FROM lecturer WHERE staffid = '$username'";
                 $result = $db->query($sql);
                 $row = mysqli_fetch_array($result,MYSQLI_BOTH);
-                $givenname= $row['givenname'];
-        $familyname=$row['familyname'];
-        
-        $year=$row['yearjoined'];
-        $contact=$row['staffcontactno'];
-        $identification= $username;
-        $projectone = $row['project1'];
-        $projecttwo = $row['project2'];
-        $user = $_SESSION['user'];
-
-            }
-
+                    
+                    $givenname= $row['givenname'];
+                    $familyname=$row['familyname'];
+                    
+                    $year=$row['yearjoined'];
+                    $contact=$row['staffcontactno'];
+                    $identification= $username;
+                    $projectone = $row['project1'];
+                    $projecttwo = $row['project2'];
+                    $user = $_SESSION['user'];
             ?>
 <!-- Site wrapper -->
 <div class="wrapper">
@@ -138,7 +134,7 @@
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
 <?php
-               if($_SESSION['user']=="Admin"){
+
                 echo "'<li class='nav-item'>
                 <a href='welcome.php' class='nav-link'>
                   <i class='nav-icon fas fa-user-circle'></i>
@@ -158,7 +154,7 @@
               </li>
               
               <li class='nav-item'>
-                <a href='category.php' class='nav-link active'>
+                <a href='category.php' class='nav-link'>
                   <i class='nav-icon fas fa-tags'></i>
                   <p>
                     Category
@@ -176,7 +172,7 @@
               </li>
 
               <li class='nav-item'>
-                <a href='lecturers.php' class='nav-link'>
+                <a href='lecturers.php' class='nav-link active'>
                   <i class='nav-icon fas fa-chalkboard-teacher'></i>
                   <p>
                     Lecturers
@@ -194,7 +190,7 @@
               </li>
 
               ";
-               }
+
           ?>
          
         </ul>
@@ -211,13 +207,13 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Category</h1>
+            <h1>Lecturers</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
               <!--<li class="breadcrumb-item"><a href="#">Layout</a></li>-->
-              <li class="breadcrumb-item active">Category</li>
+              <li class="breadcrumb-item active">Lecturers</li>
             </ol>
           </div>
         </div>
@@ -236,150 +232,72 @@
 
 
 
+             <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Lecturers Table</h3>
 
-            <div class="card">
-        <div class="card-header">
-          <h3 class="card-title">Category Table</h3>
+                <div class="card-tools">
+                  <div class="input-group input-group-sm" style="width: 150px;">
+                    <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
 
-        </div>
-        <div class="card-body p-0">
-          <table class="table table-striped projects">
-              <thead>
-                  <tr>
-                      <th style="width: 1%">
-                          #
-                      </th>
-                      <th style="width: 20%">
-                          Category Name
-                      </th>
-                      <th style="width: 30%">
-                          Softwares
-                      </th>
-                      <th>
+                    <div class="input-group-append">
+                      <button type="submit" class="btn btn-default">
+                        <i class="fas fa-search"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body table-responsive p-0" style="height: 300px;">
+                <table class="table table-head-fixed text-nowrap">
+                  <thead>
+                    <tr>
+                      <th>Lecturer name</th>
+                      <th>Contact No</th>
+                      <th>Date Joined</th>
+                      <th>Year Joined</th>
+                      <th>Project 1</th>
+                      <th>Project 2</th>
+                    </tr>
+                  </thead>
+                  <tbody>
 
-                      </th>
-                      <th style="width: 8%" class="text-center">
-                          Status
-                      </th>
-                  </tr>
-              </thead>
-              
-            <tbody>
-
-            <?php 
-            /*$sql2 = "SELECT DISTINCT category.categoryname,category.categoryno ,software.softwaretitle
-FROM software
-INNER JOIN category
-ON category.categoryno IN(cat1, cat2)
-ORDER BY category.categorynod";
-            $result2 = $db->query($sql2);*/
-            for($i=1; $i<6; $i++){
-                $sql3 = "SELECT DISTINCT category.categoryname,category.categoryno ,software.softwaretitle
-    FROM software
-    INNER JOIN category
-    ON category.categoryno IN(cat1, cat2)
-    WHERE category.categoryno= '$i'";
-    $result3 = $db->query($sql3);
-    $result2= $db->query($sql3);
-    $row2 = mysqli_fetch_array($result2,MYSQLI_BOTH);
-
-    //if ($result3->num_rows > 0) { 
-    ?>
-    <tr>
-                      <td>
-                          #<?php echo $row2['categoryno'];?>
-                      </td>
-                      <td>
-                          <a>
-                          <?php echo $row2['categoryname'];?>
-                          </a>
-                      </td>
-                      <td>
-                          <ul class="list-inline">
-<?php
-    while($row3 = mysqli_fetch_assoc($result3)) { 
-        if($row3['softwaretitle']=="Unity"){
-            $symbolapp="<i class='fab fa-unity fa-2x'></i>";
-        }
-        elseif($row3['softwaretitle']=="Android Studio"){
-            $symbolapp="<i class='fab fa-android fa-2x'></i>";
-        }
-        elseif($row3['softwaretitle']=="InVision"){
-            $symbolapp="<i class='fab fa-invision fa-2x'></i>";
-        }
-        elseif($row3['softwaretitle']=="Powerpoint"){
-            $symbolapp="<i class='far fa-file-powerpoint fa-2x'></i>";
-        }
-        elseif($row3['softwaretitle']=="After Effects"){
-            $symbolapp="<img alt='Avatar' class='table-avatar' src='assets/static/images/ae.png'>";
-        }
-        elseif($row3['softwaretitle']=="Maya"){
-            $symbolapp="<img alt='Avatar' class='table-avatar' src='assets/static/images/maya.png'>";
-        }
-        elseif($row3['softwaretitle']=="Illustrator"){
-            $symbolapp="<img alt='Avatar' class='table-avatar' src='assets/static/images/adobe-illustrator.png'>";
-        }
-        elseif($row3['softwaretitle']=="Photoshop"){
-            $symbolapp="<img alt='Avatar' class='table-avatar' src='assets/static/images/adobe-photoshop.png'>";
-        }
-        elseif($row3['softwaretitle']=="Premiere Pro"){
-            $symbolapp="<img alt='Avatar' class='table-avatar' src='assets/static/images/pp.png'>";
-        }
-        elseif($row3['softwaretitle']=="XD"){
-            $symbolapp="<img alt='Avatar' class='table-avatar' src='assets/static/images/xd.png'>";
-        }
-        ?>
-        <li class="list-inline-item">
-            <?php echo $symbolapp;?>
-        </li>
-    <?php
+<?php $sql2 = "SELECT *
+FROM lecturer
+ORDER BY staffid";
+$result2 = $db->query($sql2);
+if ($result2->num_rows > 0) { 
+    while($row2 = mysqli_fetch_assoc($result2)) { 
+        echo "<tr>
+        <td>". $row2['givenname'] . " ".$row2['familyname']."</td>
+        <td>" .$row2['staffcontactno']."</td>
+        <td>". $row2['datejoined']. "</td>
+        <td>". $row2['yearjoined'] ."</td>
+        <td>". $row2['project1'] ."</td>
+        <td>". $row2['project2'] ."</td>
+      </tr>";
     }
-    echo "</ul></td><td>
-</td>
-    <td> Sem 2.2 </td>
-</tr>";
+}
+	
 
-}     
-        ?>
+?>
+                    
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
 
 
 
 
 
-                  <!--
-                              <li class="list-inline-item">
-                                  
-                                  <img alt="Avatar" class="table-avatar" src="AdminLTE-3.1.0-rc/dist/img/avatar.png">
-                              </li>
-                              <li class="list-inline-item">
-                                  <img alt="Avatar" class="table-avatar" src="AdminLTE-3.1.0-rc/dist/img/avatar2.png">
-                              </li>
-                              <li class="list-inline-item">
-                                  <img alt="Avatar" class="table-avatar" src="AdminLTE-3.1.0-rc/dist/img/avatar3.png">
-                              </li>
-                              <li class="list-inline-item">
-                                  <img alt="Avatar" class="table-avatar" src="AdminLTE-3.1.0-rc/dist/img/avatar4.png">
-                              </li>-->
-                          
-                  
-                  
-                  
-
-                  
-                  
-              </tbody>
-          </table>
-        </div>
-        <!-- /.card-body -->
-      </div>
 
 
 
 
         </div>
-
-        
-
         </div>
       </div>
     </section>
